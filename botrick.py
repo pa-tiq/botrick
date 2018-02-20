@@ -130,18 +130,19 @@ def wolfram(bot, update):
     except:
         details = ""
     
-    
-        if(info!="" & results!="")
-            if(info == results)
-                bot.send_message(chat_id=update.message.chat_id, text= results)
-            else
-                bot.send_message(chat_id=update.message.chat_id, text= info)   
-                bot.send_message(chat_id=update.message.chat_id, text= results)
-
-    bot.send_message(chat_id=update.message.chat_id, text= info)   
-    bot.send_message(chat_id=update.message.chat_id, text= results)
-    bot.send_message(chat_id=update.message.chat_id, text= details)
-
+    if(info!="" and results!=""):
+        if(info == results):
+            bot.send_message(chat_id=update.message.chat_id, text= results)
+        else:
+            bot.send_message(chat_id=update.message.chat_id, text= info)   
+            bot.send_message(chat_id=update.message.chat_id, text= results)
+    else: 
+        if(details != ""):
+            for key,value in details.items():
+                if(value!=None): 
+                    bot.send_message(chat_id=update.message.chat_id, text= key+": "+value)
+                if(key=="Image" and value!=None): 
+                    bot.send_photo(chat_id=update.message.chat_id, photo=value)
 
 wolfram_handler = CommandHandler('wolfram', wolfram)
 dispatcher.add_handler(wolfram_handler)
@@ -157,7 +158,5 @@ def unknown(bot, update):
 
 unknown_handler = MessageHandler(Filters.command, unknown)
 dispatcher.add_handler(unknown_handler)
-
-
 
 updater.start_polling()
