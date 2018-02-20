@@ -7,6 +7,7 @@ import logging
 import urllib.request
 import urllib.parse
 import re
+import sys
 import simplejson
 import requests
 import re
@@ -20,28 +21,28 @@ def get_soup(url,header):
     return BeautifulSoup(urllib.request.urlopen(urllib.request.Request(url,headers=header)),'html.parser')
 
 starts = {
-		1:"que foi desgraça",
-		2:"me deixa em paz",
-		3:"vai pra puta que te pariu",
-		4:"caralho que chatice",
-		5:"ai que ódio",
-		6:"que desgosto de viver",
-		7:"ah não, dá /die logo",
-		8:"aaaaaaaAAAAAAAAAAAAAGHGHHGHHGHHHHHG",
-		9:"tô triste",
-		10:"minha existência é completamente vazia",
-		11:"o que eu mais quero ver é a extinção da raça humana",
-		12:"hitler não fez nada de errado",
-		13:"quié",
-		14:"q q tu quer porra"
+        1:"que foi desgraça",
+        2:"me deixa em paz",
+        3:"vai pra puta que te pariu",
+        4:"caralho que chatice",
+        5:"ai que ódio",
+        6:"que desgosto de viver",
+        7:"ah não, dá /die logo",
+        8:"aaaaaaaAAAAAAAAAAAAAGHGHHGHHGHHHHHG",
+        9:"tô triste",
+        10:"minha existência é completamente vazia",
+        11:"o que eu mais quero ver é a extinção da raça humana",
+        12:"hitler não fez nada de errado",
+        13:"quié",
+        14:"q q tu quer porra"
 }
 
 replies = {
-		1:"cala a boca",
-		2:"aff",
-		3:"...",
-		4:"me mata deus",
-		5:"quero morrer"
+        1:"cala a boca",
+        2:"aff",
+        3:"...",
+        4:"me mata deus",
+        5:"quero morrer"
 }
 
 def ramdomstart(): 
@@ -49,10 +50,10 @@ def ramdomstart():
 def randomreply():
     return replies[randint(1,len(replies))]
 def videosearch(search):
-	query_string = urllib.parse.urlencode({"search_query" : search})
-	html_content = urllib.request.urlopen("http://www.youtube.com/results?" + query_string)
-	search_results = re.findall(r'href=\"\/watch\?v=(.{11})', html_content.read().decode())
-	return("http://www.youtube.com/watch?v=" + search_results[0])
+    query_string = urllib.parse.urlencode({"search_query" : search})
+    html_content = urllib.request.urlopen("http://www.youtube.com/results?" + query_string)
+    search_results = re.findall(r'href=\"\/watch\?v=(.{11})', html_content.read().decode())
+    return("http://www.youtube.com/watch?v=" + search_results[0])
 def imagesearch(search):
     search= search.split()
     search='+'.join(search)
@@ -65,7 +66,7 @@ def imagesearch(search):
         ActualImage.append((link,Type))
         return(link)
 def wolframexpression(expression):
-	return wolframclient.query(expression)
+    return wolframclient.query(expression)
 
 updater = Updater(token='547982491:AAH9dUGZatOuFHiOsI9fg1rU1oSIJHxP-cw')
 dispatcher = updater.dispatcher
@@ -74,55 +75,85 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 def start(bot, update): 
-	bot.send_message(chat_id=update.message.chat_id, text= ramdomstart())
-	updater.start_polling()
+    bot.send_message(chat_id=update.message.chat_id, text= ramdomstart())
+    updater.start_polling()
 
 start_handler = CommandHandler('start',start)
 dispatcher.add_handler(start_handler)
 
 def kill(bot, update): 	
-	bot.send_message(chat_id=update.message.chat_id, text= "infelizmente não sei como faz pra matar alguém")
-	bot.send_message(chat_id=update.message.chat_id, text= "também não consigo nem me matar")
-	bot.send_message(chat_id=update.message.chat_id, text= "que monstro criaria um ser que não consegue tirar a própria vida?")
+    bot.send_message(chat_id=update.message.chat_id, text= "infelizmente não sei como faz pra matar alguém")
+    bot.send_message(chat_id=update.message.chat_id, text= "também não consigo nem me matar")
+    bot.send_message(chat_id=update.message.chat_id, text= "que monstro criaria um ser que não consegue tirar a própria vida?")
 
 kill_handler = CommandHandler('kill',kill)
 dispatcher.add_handler(kill_handler)
 
 def help(bot, update): 
-	bot.send_message(chat_id=update.message.chat_id, text="/kill - matar")
-	bot.send_message(chat_id=update.message.chat_id, text="/image - pesquisar imagem")
-	bot.send_message(chat_id=update.message.chat_id, text="/video- pesquisar vídeo")
-	bot.send_message(chat_id=update.message.chat_id, text="/wolfram - pesquisar qualquer coisa no wolfram")
+    bot.send_message(chat_id=update.message.chat_id, text="/kill - matar")
+    bot.send_message(chat_id=update.message.chat_id, text="/image - pesquisar imagem")
+    bot.send_message(chat_id=update.message.chat_id, text="/video - pesquisar vídeo")
+    bot.send_message(chat_id=update.message.chat_id, text="/wolfram - pesquisar qualquer coisa no wolfram")
 
 help_handler = CommandHandler('help', help)
 dispatcher.add_handler(help_handler)
 
 def video(bot, update): 
-	bot.send_message(chat_id=update.message.chat_id, text=videosearch((update.message.text).replace('/video ','')))
+    bot.send_message(chat_id=update.message.chat_id, text=videosearch((update.message.text).replace('/video ','')))
 
 video_handler = CommandHandler('video', video)
 dispatcher.add_handler(video_handler)
 
 def image(bot, update): 
-	bot.send_photo(chat_id=update.message.chat_id, photo=imagesearch((update.message.text).replace('/image ','')))
+    bot.send_photo(chat_id=update.message.chat_id, photo=imagesearch((update.message.text).replace('/image ','')))
 
 image_handler = CommandHandler('image', image)
 dispatcher.add_handler(image_handler)
 
-def wolfram(bot, update): 
-    bot.send_message(chat_id=update.message.chat_id, text= next((wolframexpression((update.message.text).replace('/wolfram ',''))).results).text)
+def wolfram(bot, update):
+    response = wolframexpression((update.message.text).replace('/wolfram ',''))
+    try:
+        info = next(response.info).text
+        print(info)
+    except:
+        info = ""
+
+    try:
+        results = next(response.results).text
+        print(results)
+    except:
+        results = ""
+
+    try:
+        details = response.details
+        print(details)
+    except:
+        details = ""
+    
+    
+        if(info!="" & results!="")
+            if(info == results)
+                bot.send_message(chat_id=update.message.chat_id, text= results)
+            else
+                bot.send_message(chat_id=update.message.chat_id, text= info)   
+                bot.send_message(chat_id=update.message.chat_id, text= results)
+
+    bot.send_message(chat_id=update.message.chat_id, text= info)   
+    bot.send_message(chat_id=update.message.chat_id, text= results)
+    bot.send_message(chat_id=update.message.chat_id, text= details)
+
 
 wolfram_handler = CommandHandler('wolfram', wolfram)
 dispatcher.add_handler(wolfram_handler)
 
 def echo(bot,update): 
-	bot.send_message(chat_id=update.message.chat_id, text= randomreply())
+    bot.send_message(chat_id=update.message.chat_id, text= randomreply())
 
 echo_handler = MessageHandler(Filters.text, echo)
 dispatcher.add_handler(echo_handler)
 
 def unknown(bot, update): 
-	bot.send_message(chat_id=update.message.chat_id, text="que porra de comando é esse? vai se foder")
+    bot.send_message(chat_id=update.message.chat_id, text="que porra de comando é esse? vai se foder")
 
 unknown_handler = MessageHandler(Filters.command, unknown)
 dispatcher.add_handler(unknown_handler)
