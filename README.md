@@ -6,3 +6,5 @@ Telegram Bot - python
 /video - requests a video from youtube and returns the first result
 
 /wolfram - requests a search on wolfram alpha
+
+/more - next result after a /image or /video

@@ -11,7 +11,6 @@ import re
 import sys
 import simplejson
 import requests
-import re
 import json
 import wolframalpha
 
@@ -37,7 +36,14 @@ replies = {
 		2:"aff",
 		3:"...",
 		4:"me mata deus",
-		5:"quero morrer"
+		5:"quero morrer",
+		6:"quié",
+		7:"q q tu quer porra",
+		8:"que foi desgraça",
+		9:"me deixa em paz",
+		10:"vai pra puta que te pariu",
+		11:"caralho que chatice",
+		12:"ai que ódio"
 }
 
 moreCounter = 0
@@ -149,21 +155,13 @@ def wolfram(bot, update):
 
 dispatcher.add_handler(CommandHandler('wolfram', wolfram))
 
-def echo(bot,update): 
-	bot.send_message(chat_id=update.message.chat_id, text= randomreply())
-
-dispatcher.add_handler(MessageHandler(Filters.text, echo))
-
-def unknown(bot, update): 
-	bot.send_message(chat_id=update.message.chat_id, text="que porra de comando é esse? vai se foder")	
-
-dispatcher.add_handler(MessageHandler(Filters.command, unknown))
-
 def more(bot,update):	
+	print(">>>>>>>>>>>>>>>>"+lastQuery)
 	if lastQuery == "":
 		return
 	global moreCounter
-	query = lastQuery.split('',1)
+	query = lastQuery.split(' ',1)
+	print(query)
 	if (query[0] == "/video"):
 		moreCounter += 1
 		bot.send_message(chat_id=update.message.chat_id, text=videosearch(query[1],moreCounter))
@@ -177,24 +175,15 @@ def more(bot,update):
 
 dispatcher.add_handler(CommandHandler('more', more))
 
-def inline_caps(bot, update):
-	query = update.inline_query.query
-	if not query:
-		return
-	print(query)
-	results = list()
-	results.append(
-		InlineQueryResultArticle(
-			id=query.upper(),
-			title='Caps',
-			input_message_content=InputTextMessageContent(query.upper())
-		)
-	)
-	update.inline_query.answer(results)
-	bot.answer_inline_query(update.inline_query.id, results)
-	bot.send_message(chat_id=update.inline_query.id, text= randomstart())
+def echo(bot,update): 
+	bot.send_message(chat_id=update.message.chat_id, text= randomreply())
 
-dispatcher.add_handler(InlineQueryHandler(inline_caps))
+dispatcher.add_handler(MessageHandler(Filters.text, echo))
+
+def unknown(bot, update): 
+	bot.send_message(chat_id=update.message.chat_id, text="que porra de comando é esse? vai se foder")	
+
+dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 
 updater.start_polling()
 updater.idle()

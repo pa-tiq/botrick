@@ -11,3 +11,10 @@ name = "pypi"
 
 [packages]
 
+telegram = "*"
+"bs4" = "*"
+simplejson = "*"
+logging = "*"
+wolframalpha = "*"
+requests = "*"
+python-telegram-bot = "*"
