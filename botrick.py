@@ -15,35 +15,35 @@ import json
 import wolframalpha
 
 starts = {
-		1:"que foi desgraça",
-		2:"me deixa em paz",
-		3:"vai pra puta que te pariu",
-		4:"caralho que chatice",
-		5:"ai que ódio",
-		6:"que desgosto de viver",
-		7:"ah não, dá /die logo",
-		8:"aaaaaaaAAAAAAAAAAAAAGHGHHGHHGHHHHHG",
-		9:"tô triste",
-		10:"minha existência é completamente vazia",
-		11:"o que eu mais quero ver é a extinção da raça humana",
-		12:"hitler não fez nada de errado",
-		13:"quié",
-		14:"q q tu quer porra"
+	1:"que foi desgraça",
+	2:"me deixa em paz",
+	3:"vai pra puta que te pariu",
+	4:"caralho que chatice",
+	5:"ai que ódio",
+	6:"que desgosto de viver",
+	7:"ah não, dá /die logo",
+	8:"aaaaaaaAAAAAAAAAAAAAGHGHHGHHGHHHHHG",
+	9:"tô triste",
+	10:"minha existência é completamente vazia",
+	11:"o que eu mais quero ver é a extinção da raça humana",
+	12:"hitler não fez nada de errado",
+	13:"quié",
+	14:"q q tu quer porra"
 }
 
 replies = {
-		1:"cala a boca",
-		2:"aff",
-		3:"...",
-		4:"me mata deus",
-		5:"quero morrer",
-		6:"quié",
-		7:"q q tu quer porra",
-		8:"que foi desgraça",
-		9:"me deixa em paz",
-		10:"vai pra puta que te pariu",
-		11:"caralho que chatice",
-		12:"ai que ódio"
+	1:"cala a boca",
+	2:"aff",
+	3:"...",
+	4:"me mata deus",
+	5:"quero morrer",
+	6:"quié",
+	7:"q q tu quer porra",
+	8:"que foi desgraça",
+	9:"me deixa em paz",
+	10:"vai pra puta que te pariu",
+	11:"caralho que chatice",
+	12:"ai que ódio"
 }
 
 moreCounter = 0
