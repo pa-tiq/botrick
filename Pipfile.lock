@@ -77,10 +77,10 @@
         },
         "jaraco.itertools": {
             "hashes": [
-                "sha256:68a12bdea6d2be38ba62c4ded6f6cada712667316fc387c1e5891d50abbf999f",
-                "sha256:cef8990828834d3a298d0e2e21cc74617f49e6eabe84d32feb74fbd572ddf488"
+                "sha256:82986052b1225acee066a01852186166d6f74ca36dbc6de0cd94345291c37614",
+                "sha256:368e67e4cb9a046db36053d91ece963bbb798639d0898953ca596d544e6b6cd9"
             ],
-            "version": "==2.1"
+            "version": "==2.1.1"
         },
         "logging": {
             "hashes": [
@@ -98,10 +98,10 @@
         },
         "python-telegram-bot": {
             "hashes": [
-                "sha256:ca5e1d257702d194ad5a5a0e6ccffb31203f1f783bf1c5da60c128f083032c44",
-                "sha256:f5c3233bea7c7adf165e31225bbe9f28717e9f1f5070ebe99a4757c31c27ab28"
+                "sha256:caa89c0eb1e5284ec0d02d6a9a4d6dc1b7db356c16fcde0a4472c4613b742c6e",
+                "sha256:580390d75a63706647962556bab69c7313bee1438411288c37f545e421498e6c"
             ],
-            "version": "==9.0.0"
+            "version": "==10.0.1"
         },
         "requests": {
             "hashes": [
@@ -158,10 +158,10 @@
         },
         "wolframalpha": {
             "hashes": [
-                "sha256:4d118e5d8647ba694e5b9d280e45f3f07748136f30b4971bcebc2f7564cd6120",
-                "sha256:17d1edc912312d4749980a525b2e4493cc2279223abd4d16e87710fd67d08ce6"
+                "sha256:35c68635c9460a25f3e7b3b3b5498d2d7a4d05667f7e30a3007b0e1c611f2599",
+                "sha256:e1eef0cbee3cd5387cae8f112a5464e951161facf1e37f61ca98d77e7a4c01fa"
             ],
-            "version": "==3.0"
+            "version": "==3.0.1"
         },
         "xmltodict": {
             "hashes": [
