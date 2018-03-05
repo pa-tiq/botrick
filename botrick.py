@@ -60,6 +60,7 @@ def videosearch(search,i):
 	query_string = urllib.parse.urlencode({"search_query" : search})
 	html_content = urllib.request.urlopen("http://www.youtube.com/results?" + query_string)
 	search_results = re.findall(r'href=\"\/watch\?v=(.{11})', html_content.read().decode())
+	print(f"/////video - i: {i}")
 	return("http://www.youtube.com/watch?v=" + search_results[i])
 def imagesearch(search,i):
 	search= search.split()
@@ -67,12 +68,23 @@ def imagesearch(search,i):
 	url="https://www.google.co.in/search?q="+search+"&source=lnms&tbm=isch"
 	header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"}
 	soup = get_soup(url,header) 
-	ActualImage=[]
+	ActualImage=[] #unused
 	for a in soup.find_all("div",{"class":"rg_meta"}):
-		link , Type =json.loads(a.text)["ou"]  ,json.loads(a.text)["ity"]
+		link, Type = json.loads(a.text)["ou"], json.loads(a.text)["ity"]
 		ActualImage.append((link,Type)) #unused
 		if(i==0): 
 			return(link)
+		else:
+			i = i-1
+def googlesearch(search,i):
+	search= search.split()
+	search='+'.join(search)
+	url="https://www.google.co.in/search?q="+search+"&source=lnms"
+	header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"}
+	soup = get_soup(url,header) 
+	for a in soup.find_all("cite",{"class":"_Rm"}): 
+		if(i==0): 
+			return(a.text)
 		else:
 			i = i-1
 def wolframexpression(expression):
@@ -126,6 +138,15 @@ def image(bot, update):
 
 dispatcher.add_handler(CommandHandler('image', image))
 
+def google(bot, update):
+	global moreCounter
+	moreCounter = 0
+	global lastQuery
+	lastQuery = update.message.text
+	bot.send_message(chat_id=update.message.chat_id, text=googlesearch(lastQuery.replace('/search ',''),moreCounter))
+
+dispatcher.add_handler(CommandHandler('search', google))
+
 def wolfram(bot, update):
 	response = wolframexpression(lastQuery.replace('/wolfram ',''))
 	try:
@@ -169,7 +190,8 @@ def more(bot,update):
 		moreCounter += 1
 		bot.send_message(chat_id=update.message.chat_id, text=imagesearch(query[1],moreCounter))
 	elif (query[0] == "/search"):
-		return
+		moreCounter += 1
+		bot.send_message(chat_id=update.message.chat_id, text=googlesearch(query[1],moreCounter))
 	elif (query[0] == "/gif"):
 		return
 
