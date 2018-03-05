@@ -60,7 +60,6 @@ def videosearch(search,i):
 	query_string = urllib.parse.urlencode({"search_query" : search})
 	html_content = urllib.request.urlopen("http://www.youtube.com/results?" + query_string)
 	search_results = re.findall(r'href=\"\/watch\?v=(.{11})', html_content.read().decode())
-	print(f"/////video - i: {i}")
 	return("http://www.youtube.com/watch?v=" + search_results[i])
 def imagesearch(search,i):
 	search= search.split()
@@ -89,6 +88,8 @@ def googlesearch(search,i):
 			i = i-1
 def wolframexpression(expression):
 	return wolframclient.query(expression)
+def gifsearch(search,i):
+	return
 
 updater = Updater(token='547982491:AAH9dUGZatOuFHiOsI9fg1rU1oSIJHxP-cw')
 dispatcher = updater.dispatcher
@@ -147,6 +148,15 @@ def google(bot, update):
 
 dispatcher.add_handler(CommandHandler('search', google))
 
+def gif(bot, update):
+	global moreCounter
+	moreCounter = 0
+	global lastQuery
+	lastQuery = update.message.text
+	bot.send_message(chat_id=update.message.chat_id, text=gifsearch(lastQuery.replace('/gif ',''),moreCounter))
+
+dispatcher.add_handler(CommandHandler('gif', gif))
+
 def wolfram(bot, update):
 	response = wolframexpression(lastQuery.replace('/wolfram ',''))
 	try:
@@ -177,12 +187,10 @@ def wolfram(bot, update):
 dispatcher.add_handler(CommandHandler('wolfram', wolfram))
 
 def more(bot,update):	
-	print(">>>>>>>>>>>>>>>>"+lastQuery)
 	if lastQuery == "":
 		return
 	global moreCounter
 	query = lastQuery.split(' ',1)
-	print(query)
 	if (query[0] == "/video"):
 		moreCounter += 1
 		bot.send_message(chat_id=update.message.chat_id, text=videosearch(query[1],moreCounter))
