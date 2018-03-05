@@ -1,5 +1,5 @@
 # botrick
-Telegram Bot - python
+Telegram Bot - python - using python-telegram-bot
 
 /search - simple google search, returns the first result
 
