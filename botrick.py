@@ -60,7 +60,11 @@ def videosearch(search,i):
 	query_string = urllib.parse.urlencode({"search_query" : search})
 	html_content = urllib.request.urlopen("http://www.youtube.com/results?" + query_string)
 	search_results = re.findall(r'href=\"\/watch\?v=(.{11})', html_content.read().decode())
-	return("http://www.youtube.com/watch?v=" + search_results[i])
+	output = []
+	for x in search_results:
+		if x not in output:
+			output.append(x)
+	return("http://www.youtube.com/watch?v=" + output[i])
 def imagesearch(search,i):
 	search= search.split()
 	search='+'.join(search)
@@ -89,8 +93,13 @@ def googlesearch(search,i):
 			i = i-1
 def wolframexpression(expression):
 	return wolframclient.query(expression)
-def gifsearch(search,i):
-	return
+def gifsearch(search,i):		
+	search= search.split()
+	search='+'.join(search)	
+	data = json.loads(urllib.request.urlopen("http://api.giphy.com/v1/gifs/search?q="+search+"&api_key=vIzKLg5aoWTikIQFB5LYXPB48hA4dHFe&limit=10").read())
+	search_results = re.findall(r"\"bitly_gif_url\":\s\"https://(.{14})\"", json.dumps(data))
+	print(search_results)
+	return search_results[i]
 
 updater = Updater(token='547982491:AAH9dUGZatOuFHiOsI9fg1rU1oSIJHxP-cw')
 dispatcher = updater.dispatcher
@@ -202,7 +211,8 @@ def more(bot,update):
 		moreCounter += 1
 		bot.send_message(chat_id=update.message.chat_id, text=googlesearch(query[1],moreCounter))
 	elif (query[0] == "/gif"):
-		return
+		moreCounter += 1
+		bot.send_message(chat_id=update.message.chat_id, text=gifsearch(query[1],moreCounter))
 
 dispatcher.add_handler(CommandHandler('more', more))
 
