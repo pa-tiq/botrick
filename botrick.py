@@ -98,7 +98,6 @@ def gifsearch(search,i):
 	search='+'.join(search)	
 	data = json.loads(urllib.request.urlopen("http://api.giphy.com/v1/gifs/search?q="+search+"&api_key=vIzKLg5aoWTikIQFB5LYXPB48hA4dHFe&limit=10").read())
 	search_results = re.findall(r"\"bitly_gif_url\":\s\"https://(.{14})\"", json.dumps(data))
-	print(search_results)
 	return search_results[i]
 
 updater = Updater(token='547982491:AAH9dUGZatOuFHiOsI9fg1rU1oSIJHxP-cw')
@@ -136,7 +135,9 @@ def video(bot, update):
 	moreCounter = 0
 	global lastQuery
 	lastQuery = update.message.text
-	bot.send_message(chat_id=update.message.chat_id, text=videosearch(lastQuery.replace('/video ',''),moreCounter))
+	message = videosearch(lastQuery.replace('/video ',''),moreCounter)
+	if(message != None):
+		bot.send_message(chat_id=update.message.chat_id, text=message)
 
 dispatcher.add_handler(CommandHandler('video', video))
 
@@ -145,7 +146,9 @@ def image(bot, update):
 	moreCounter = 0
 	global lastQuery
 	lastQuery = update.message.text
-	bot.send_photo(chat_id=update.message.chat_id, photo=imagesearch(lastQuery.replace('/image ',''),moreCounter))
+	message = imagesearch(lastQuery.replace('/image ',''),moreCounter)
+	if(message != None):
+		bot.send_photo(chat_id=update.message.chat_id, photo=message)
 
 dispatcher.add_handler(CommandHandler('image', image))
 
@@ -154,7 +157,9 @@ def google(bot, update):
 	moreCounter = 0
 	global lastQuery
 	lastQuery = update.message.text
-	bot.send_message(chat_id=update.message.chat_id, text=googlesearch(lastQuery.replace('/search ',''),moreCounter))
+	message = googlesearch(lastQuery.replace('/search ',''),moreCounter)
+	if(message != None):
+		bot.send_message(chat_id=update.message.chat_id, text=message)
 
 dispatcher.add_handler(CommandHandler('search', google))
 
@@ -163,7 +168,9 @@ def gif(bot, update):
 	moreCounter = 0
 	global lastQuery
 	lastQuery = update.message.text
-	bot.send_message(chat_id=update.message.chat_id, text=gifsearch(lastQuery.replace('/gif ',''),moreCounter))
+	message = gifsearch(lastQuery.replace('/gif ',''),moreCounter)
+	if(message != None):
+		bot.send_message(chat_id=update.message.chat_id, text=message)
 
 dispatcher.add_handler(CommandHandler('gif', gif))
 
@@ -203,16 +210,24 @@ def more(bot,update):
 	query = lastQuery.split(' ',1)
 	if (query[0] == "/video"):
 		moreCounter += 1
-		bot.send_message(chat_id=update.message.chat_id, text=videosearch(query[1],moreCounter))
+		video = videosearch(query[1],moreCounter)
+		if(video != None):
+			bot.send_message(chat_id=update.message.chat_id, text=video)
 	elif (query[0] == "/image"):
 		moreCounter += 1
-		bot.send_message(chat_id=update.message.chat_id, text=imagesearch(query[1],moreCounter))
+		image = imagesearch(query[1],moreCounter)
+		if(image != None):
+			bot.send_message(chat_id=update.message.chat_id, text=image)
 	elif (query[0] == "/search"):
 		moreCounter += 1
-		bot.send_message(chat_id=update.message.chat_id, text=googlesearch(query[1],moreCounter))
+		goog = googlesearch(query[1],moreCounter)
+		if(goog != None):
+			bot.send_message(chat_id=update.message.chat_id, text=goog)
 	elif (query[0] == "/gif"):
 		moreCounter += 1
-		bot.send_message(chat_id=update.message.chat_id, text=gifsearch(query[1],moreCounter))
+		gif = gifsearch(query[1],moreCounter)
+		if(gif != None):
+			bot.send_message(chat_id=update.message.chat_id, text=gif)
 
 dispatcher.add_handler(CommandHandler('more', more))
 
