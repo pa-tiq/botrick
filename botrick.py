@@ -92,7 +92,11 @@ def googlesearch(search,i):
 		else:
 			i = i-1
 def wolframexpression(expression):
-	return wolframclient.query(expression)
+	try:
+		wol = wolframclient.query(expression)
+		return wol
+	except:
+		print("pau no cu do wolfram, deu erro")
 def gifsearch(search,i):		
 	search= search.split()
 	search='+'.join(search)	
@@ -175,7 +179,8 @@ def gif(bot, update):
 dispatcher.add_handler(CommandHandler('gif', gif))
 
 def wolfram(bot, update):
-	response = wolframexpression(lastQuery.replace('/wolfram ',''))
+	response = wolframexpression(update.message.text.replace('/wolfram ',''))
+	if(response == None): return
 	try:
 		info = next(response.info).text
 	except:
@@ -183,7 +188,7 @@ def wolfram(bot, update):
 	try:
 		results = next(response.results).text
 	except:
-		results = ""
+		results = ""		
 	try:
 		details = response.details
 	except:
