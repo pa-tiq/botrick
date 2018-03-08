@@ -58,7 +58,7 @@ logger = logging.getLogger(__name__)
 
 dispatcher.add_handler(CommandHandler('start',start))
 dispatcher.add_handler(CommandHandler('kill',kill))
-dispatcher.add_handler(CommandHandler('help', help))
+dispatcher.add_handler(CommandHandler('help', helpcommands))
 dispatcher.add_handler(CommandHandler('video', video))
 dispatcher.add_handler(CommandHandler('image', image))
 dispatcher.add_handler(CommandHandler('search', google))
@@ -121,7 +121,7 @@ def wolframexpression(expression):
 		return wol
 	except:
 		print("pau no cu do wolfram, deu erro")
-		
+
 def gifsearch(search,i):		
 	search= search.split()
 	search='+'.join(search)	
@@ -138,7 +138,7 @@ def kill(bot, update):
 	bot.send_message(chat_id=update.message.chat_id, text= "também não consigo nem me matar")
 	bot.send_message(chat_id=update.message.chat_id, text= "que monstro criaria um ser que não consegue tirar a própria vida?")
 
-def help(bot, update): 
+def helpcommands(bot, update): 
 	bot.send_message(chat_id=update.message.chat_id, text="/kill - matar")
 	bot.send_message(chat_id=update.message.chat_id, text="/image - pesquisar imagem")
 	bot.send_message(chat_id=update.message.chat_id, text="/video - pesquisar vídeo")
