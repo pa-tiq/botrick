@@ -1,3 +1,0 @@
-wolfram = "V6HL75-H6WJWKPYEQ"
-telegram = "547982491:AAH9dUGZatOuFHiOsI9fg1rU1oSIJHxP-cw"
-giphy = "vIzKLg5aoWTikIQFB5LYXPB48hA4dHFe" 
