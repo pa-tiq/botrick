@@ -13,6 +13,7 @@ import simplejson
 import requests
 import json
 import wolframalpha
+import keys
 
 starts = {
 	1:"que foi desgraça",
@@ -48,9 +49,9 @@ replies = {
 
 moreCounter = 0
 lastQuery = ""
-wolframclient = wolframalpha.Client('V6HL75-H6WJWKPYEQ')
+wolframclient = wolframalpha.Client(keys.wolfram)
 
-updater = Updater(token='547982491:AAH9dUGZatOuFHiOsI9fg1rU1oSIJHxP-cw')
+updater = Updater(token=keys.telegram)
 dispatcher = updater.dispatcher
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -125,7 +126,7 @@ def wolframexpression(expression):
 def gifsearch(search,i):		
 	search= search.split()
 	search='+'.join(search)	
-	data = json.loads(urllib.request.urlopen("http://api.giphy.com/v1/gifs/search?q="+search+"&api_key=vIzKLg5aoWTikIQFB5LYXPB48hA4dHFe&limit=10").read())
+	data = json.loads(urllib.request.urlopen("http://api.giphy.com/v1/gifs/search?q="+search+"&api_key="+keys.giphy+"&limit=10").read())
 	search_results = re.findall(r"\"bitly_gif_url\":\s\"https://(.{14})\"", json.dumps(data))
 	return search_results[i]
 
