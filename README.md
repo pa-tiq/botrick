@@ -5,7 +5,7 @@ Telegram Bot - python - using python-telegram-bot
 
 /image - requests an image from google images
 
-/video - outube search
+/video - youtube search
 
 /wolfram - simple search on wolfram alpha, returns a lot of stuff about pretty much anything
 

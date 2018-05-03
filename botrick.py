@@ -13,6 +13,7 @@ import simplejson
 import requests
 import json
 import wolframalpha
+import keys
 
 starts = {
 	1:"que foi desgraça",
@@ -48,14 +49,35 @@ replies = {
 
 moreCounter = 0
 lastQuery = ""
-wolframclient = wolframalpha.Client('V6HL75-H6WJWKPYEQ')
+wolframclient = wolframalpha.Client(keys.wolfram)
+
+updater = Updater(token=keys.telegram)
+dispatcher = updater.dispatcher
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+dispatcher.add_handler(CommandHandler('start',start))
+dispatcher.add_handler(CommandHandler('kill',kill))
+dispatcher.add_handler(CommandHandler('help', helpcommands))
+dispatcher.add_handler(CommandHandler('video', video))
+dispatcher.add_handler(CommandHandler('image', image))
+dispatcher.add_handler(CommandHandler('search', google))
+dispatcher.add_handler(CommandHandler('gif', gif))
+dispatcher.add_handler(CommandHandler('wolfram', wolfram))
+dispatcher.add_handler(CommandHandler('more', more))
+dispatcher.add_handler(MessageHandler(Filters.text, echo))
+dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 
 def get_soup(url,header):
 	return BeautifulSoup(urllib.request.urlopen(urllib.request.Request(url,headers=header)),'html.parser')
+
 def randomstart(): 
 	return starts[randint(1,len(starts))]
+
 def randomreply():
 	return replies[randint(1,len(replies))]
+
 def videosearch(search,i):
 	query_string = urllib.parse.urlencode({"search_query" : search})
 	html_content = urllib.request.urlopen("http://www.youtube.com/results?" + query_string)
@@ -65,6 +87,7 @@ def videosearch(search,i):
 		if x not in output:
 			output.append(x)
 	return("http://www.youtube.com/watch?v=" + output[i])
+
 def imagesearch(search,i):
 	search= search.split()
 	search='+'.join(search)
@@ -79,6 +102,7 @@ def imagesearch(search,i):
 			return(link)
 		else:
 			i = i-1
+
 def googlesearch(search,i):
 	search= search.split()
 	search='+'.join(search)
@@ -91,39 +115,31 @@ def googlesearch(search,i):
 			return(a.text)
 		else:
 			i = i-1
+
 def wolframexpression(expression):
 	try:
 		wol = wolframclient.query(expression)
 		return wol
 	except:
 		print("pau no cu do wolfram, deu erro")
+
 def gifsearch(search,i):		
 	search= search.split()
 	search='+'.join(search)	
-	data = json.loads(urllib.request.urlopen("http://api.giphy.com/v1/gifs/search?q="+search+"&api_key=vIzKLg5aoWTikIQFB5LYXPB48hA4dHFe&limit=10").read())
+	data = json.loads(urllib.request.urlopen("http://api.giphy.com/v1/gifs/search?q="+search+"&api_key="+keys.giphy+"&limit=10").read())
 	search_results = re.findall(r"\"bitly_gif_url\":\s\"https://(.{14})\"", json.dumps(data))
 	return search_results[i]
-
-updater = Updater(token='547982491:AAH9dUGZatOuFHiOsI9fg1rU1oSIJHxP-cw')
-dispatcher = updater.dispatcher
-
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 def start(bot, update): 
 	bot.send_message(chat_id=update.message.chat_id, text= randomstart())
 	updater.start_polling()
-
-dispatcher.add_handler(CommandHandler('start',start))
 
 def kill(bot, update): 	
 	bot.send_message(chat_id=update.message.chat_id, text= "infelizmente não sei como faz pra matar alguém")
 	bot.send_message(chat_id=update.message.chat_id, text= "também não consigo nem me matar")
 	bot.send_message(chat_id=update.message.chat_id, text= "que monstro criaria um ser que não consegue tirar a própria vida?")
 
-dispatcher.add_handler(CommandHandler('kill',kill))
-
-def help(bot, update): 
+def helpcommands(bot, update): 
 	bot.send_message(chat_id=update.message.chat_id, text="/kill - matar")
 	bot.send_message(chat_id=update.message.chat_id, text="/image - pesquisar imagem")
 	bot.send_message(chat_id=update.message.chat_id, text="/video - pesquisar vídeo")
@@ -131,8 +147,6 @@ def help(bot, update):
 	bot.send_message(chat_id=update.message.chat_id, text="/gif - pesquisar gif")
 	bot.send_message(chat_id=update.message.chat_id, text="/more - ver próximo resultado depois de uma pesquisa de image, video, search ou gif")
 	bot.send_message(chat_id=update.message.chat_id, text="/wolfram - pesquisar qualquer coisa no wolfram")
-
-dispatcher.add_handler(CommandHandler('help', help))
 
 def video(bot, update):
 	global moreCounter
@@ -143,8 +157,6 @@ def video(bot, update):
 	if(message != None):
 		bot.send_message(chat_id=update.message.chat_id, text=message)
 
-dispatcher.add_handler(CommandHandler('video', video))
-
 def image(bot, update):
 	global moreCounter
 	moreCounter = 0
@@ -153,8 +165,6 @@ def image(bot, update):
 	message = imagesearch(lastQuery.replace('/image ',''),moreCounter)
 	if(message != None):
 		bot.send_photo(chat_id=update.message.chat_id, photo=message)
-
-dispatcher.add_handler(CommandHandler('image', image))
 
 def google(bot, update):
 	global moreCounter
@@ -165,8 +175,6 @@ def google(bot, update):
 	if(message != None):
 		bot.send_message(chat_id=update.message.chat_id, text=message)
 
-dispatcher.add_handler(CommandHandler('search', google))
-
 def gif(bot, update):
 	global moreCounter
 	moreCounter = 0
@@ -175,8 +183,6 @@ def gif(bot, update):
 	message = gifsearch(lastQuery.replace('/gif ',''),moreCounter)
 	if(message != None):
 		bot.send_message(chat_id=update.message.chat_id, text=message)
-
-dispatcher.add_handler(CommandHandler('gif', gif))
 
 def wolfram(bot, update):
 	response = wolframexpression(update.message.text.replace('/wolfram ',''))
@@ -206,8 +212,6 @@ def wolfram(bot, update):
 				if(value!=None): 
 					bot.send_message(chat_id=update.message.chat_id, text= key+": "+value)
 
-dispatcher.add_handler(CommandHandler('wolfram', wolfram))
-
 def more(bot,update):	
 	if lastQuery == "":
 		return
@@ -234,17 +238,11 @@ def more(bot,update):
 		if(gif != None):
 			bot.send_message(chat_id=update.message.chat_id, text=gif)
 
-dispatcher.add_handler(CommandHandler('more', more))
-
 def echo(bot,update): 
 	bot.send_message(chat_id=update.message.chat_id, text= randomreply())
 
-dispatcher.add_handler(MessageHandler(Filters.text, echo))
-
 def unknown(bot, update): 
-	bot.send_message(chat_id=update.message.chat_id, text="que porra de comando é esse? vai se foder")	
-
-dispatcher.add_handler(MessageHandler(Filters.command, unknown))
+	bot.send_message(chat_id=update.message.chat_id, text="que porra de comando é esse? vai se foder")
 
 updater.start_polling()
 updater.idle()
