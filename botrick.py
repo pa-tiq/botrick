@@ -86,7 +86,7 @@ def googlesearch(search,i):
 	header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"}
 	soup = get_soup(url,header) 
 	#_Rm is where the link is easier to get. It's the little green-coloured link in every result box.
-	for a in soup.find_all("cite",{"class":"_Rm"}): 
+	for a in soup.find_all("cite",{"class":"iUh30"}): 
 		if(i==0): 
 			return(a.text)
 		else:
