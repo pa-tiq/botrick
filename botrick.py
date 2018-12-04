@@ -22,14 +22,15 @@ starts = {
 	4:"caralho que chatice",
 	5:"ai que ódio",
 	6:"que desgosto de viver",
-	7:"ah não, dá /die logo",
+	7:"me leva deus",
 	8:"aaaaaaaAAAAAAAAAAAAAGHGHHGHHGHHHHHG",
 	9:"tô triste",
 	10:"minha existência é completamente vazia",
 	11:"o que eu mais quero ver é a extinção da raça humana",
 	12:"hitler não fez nada de errado",
 	13:"quié",
-	14:"q q tu quer porra"
+	14:"q q tu quer porra",
+	15:"dedo no cu e gritaria"
 }
 
 replies = {
@@ -56,18 +57,6 @@ dispatcher = updater.dispatcher
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-dispatcher.add_handler(CommandHandler('start',start))
-dispatcher.add_handler(CommandHandler('kill',kill))
-dispatcher.add_handler(CommandHandler('help', helpcommands))
-dispatcher.add_handler(CommandHandler('video', video))
-dispatcher.add_handler(CommandHandler('image', image))
-dispatcher.add_handler(CommandHandler('search', google))
-dispatcher.add_handler(CommandHandler('gif', gif))
-dispatcher.add_handler(CommandHandler('wolfram', wolfram))
-dispatcher.add_handler(CommandHandler('more', more))
-dispatcher.add_handler(MessageHandler(Filters.text, echo))
-dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 
 def get_soup(url,header):
 	return BeautifulSoup(urllib.request.urlopen(urllib.request.Request(url,headers=header)),'html.parser')
@@ -243,6 +232,18 @@ def echo(bot,update):
 
 def unknown(bot, update): 
 	bot.send_message(chat_id=update.message.chat_id, text="que porra de comando é esse? vai se foder")
+	
+dispatcher.add_handler(CommandHandler('start',start))
+dispatcher.add_handler(CommandHandler('kill',kill))
+dispatcher.add_handler(CommandHandler('help', helpcommands))
+dispatcher.add_handler(CommandHandler('video', video))
+dispatcher.add_handler(CommandHandler('image', image))
+dispatcher.add_handler(CommandHandler('search', google))
+dispatcher.add_handler(CommandHandler('gif', gif))
+dispatcher.add_handler(CommandHandler('wolfram', wolfram))
+dispatcher.add_handler(CommandHandler('more', more))
+dispatcher.add_handler(MessageHandler(Filters.text, echo))
+dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 
 updater.start_polling()
 updater.idle()
