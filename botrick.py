@@ -22,14 +22,15 @@ starts = {
 	4:"caralho que chatice",
 	5:"ai que ódio",
 	6:"que desgosto de viver",
-	7:"ah não, dá /die logo",
+	7:"me leva deus",
 	8:"aaaaaaaAAAAAAAAAAAAAGHGHHGHHGHHHHHG",
 	9:"tô triste",
 	10:"minha existência é completamente vazia",
 	11:"o que eu mais quero ver é a extinção da raça humana",
 	12:"hitler não fez nada de errado",
 	13:"quié",
-	14:"q q tu quer porra"
+	14:"q q tu quer porra",
+	15:"dedo no cu e gritaria"
 }
 
 replies = {
@@ -57,18 +58,6 @@ dispatcher = updater.dispatcher
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-dispatcher.add_handler(CommandHandler('start',start))
-dispatcher.add_handler(CommandHandler('kill',kill))
-dispatcher.add_handler(CommandHandler('help', helpcommands))
-dispatcher.add_handler(CommandHandler('video', video))
-dispatcher.add_handler(CommandHandler('image', image))
-dispatcher.add_handler(CommandHandler('search', google))
-dispatcher.add_handler(CommandHandler('gif', gif))
-dispatcher.add_handler(CommandHandler('wolfram', wolfram))
-dispatcher.add_handler(CommandHandler('more', more))
-dispatcher.add_handler(MessageHandler(Filters.text, echo))
-dispatcher.add_handler(MessageHandler(Filters.command, unknown))
-
 def get_soup(url,header):
 	return BeautifulSoup(urllib.request.urlopen(urllib.request.Request(url,headers=header)),'html.parser')
 
@@ -80,7 +69,7 @@ def randomreply():
 
 def videosearch(search,i):
 	query_string = urllib.parse.urlencode({"search_query" : search})
-	html_content = urllib.request.urlopen("http://www.youtube.com/results?" + query_string)
+	html_content = urllib.request.urlopen("http://www.youtube.com/results?search_query=" + query_string)
 	search_results = re.findall(r'href=\"\/watch\?v=(.{11})', html_content.read().decode())
 	output = []
 	for x in search_results:
@@ -109,12 +98,18 @@ def googlesearch(search,i):
 	url="https://www.google.co.in/search?q="+search+"&source=lnms"
 	header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"}
 	soup = get_soup(url,header) 
-	#_Rm is where the link is easier to get. It's the little green-coloured link in every result box.
+	#iUh30 is where the link is easier to get. It's the little green-coloured link in every result box.
 	for a in soup.find_all("cite",{"class":"iUh30"}): 
 		if(i==0): 
 			return(a.text)
 		else:
 			i = i-1
+
+def random_album_search():
+	url = "https://www.besteveralbums.com/random_album.php"
+	header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"}
+	soup = get_soup(url,header)
+	return soup.text[:(soup.text.find("Best Ever Albums") - 2)].replace(' (album)','')
 
 def wolframexpression(expression):
 	try:
@@ -147,6 +142,7 @@ def helpcommands(bot, update):
 	bot.send_message(chat_id=update.message.chat_id, text="/gif - pesquisar gif")
 	bot.send_message(chat_id=update.message.chat_id, text="/more - ver próximo resultado depois de uma pesquisa de image, video, search ou gif")
 	bot.send_message(chat_id=update.message.chat_id, text="/wolfram - pesquisar qualquer coisa no wolfram")
+	bot.send_message(chat_id=update.message.chat_id, text="/random_album - álbum aleatório")
 
 def video(bot, update):
 	global moreCounter
@@ -183,6 +179,9 @@ def gif(bot, update):
 	message = gifsearch(lastQuery.replace('/gif ',''),moreCounter)
 	if(message != None):
 		bot.send_message(chat_id=update.message.chat_id, text=message)
+
+def random_album(bot, update):
+	bot.send_message(chat_id=update.message.chat_id, text= random_album_search())		
 
 def wolfram(bot, update):
 	response = wolframexpression(update.message.text.replace('/wolfram ',''))
@@ -243,6 +242,19 @@ def echo(bot,update):
 
 def unknown(bot, update): 
 	bot.send_message(chat_id=update.message.chat_id, text="que porra de comando é esse? vai se foder")
+	
+dispatcher.add_handler(CommandHandler('start',start))
+dispatcher.add_handler(CommandHandler('kill',kill))
+dispatcher.add_handler(CommandHandler('help', helpcommands))
+dispatcher.add_handler(CommandHandler('video', video))
+dispatcher.add_handler(CommandHandler('image', image))
+dispatcher.add_handler(CommandHandler('search', google))
+dispatcher.add_handler(CommandHandler('gif', gif))
+dispatcher.add_handler(CommandHandler('wolfram', wolfram))
+dispatcher.add_handler(CommandHandler('more', more))
+dispatcher.add_handler(CommandHandler('random_album', random_album))
+dispatcher.add_handler(MessageHandler(Filters.text, echo))
+dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 
 updater.start_polling()
 updater.idle()
