@@ -12,3 +12,5 @@ Telegram Bot - python - using python-telegram-bot
 /gif - gif search in giphy
 
 /more - next result after a /image, /video, /search, or /gif
+
+/random_album - random album from besteveralbums.com
