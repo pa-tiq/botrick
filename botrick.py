@@ -45,7 +45,22 @@ replies = {
 	9:"me deixa em paz",
 	10:"vai pra puta que te pariu",
 	11:"caralho que chatice",
-	12:"ai que ódio"
+	12:"ai que ódio",
+	13:"que foi desgraça",
+	14:"me deixa em paz",
+	15:"vai pra puta que te pariu",
+	16:"caralho que chatice",
+	17:"ai que ódio",
+	18:"que desgosto de viver",
+	19:"me leva deus",
+	20:"aaaaaaaAAAAAAAAAAAAAGHGHHGHHGHHHHHG",
+	21:"tô triste",
+	22:"minha existência é completamente vazia",
+	23:"o que eu mais quero ver é a extinção da raça humana",
+	24:"hitler não fez nada de errado",
+	25:"quié",
+	26:"q q tu quer porra",
+	27:"dedo no cu e gritaria"
 }
 
 moreCounter = 0
