@@ -175,7 +175,10 @@ def image(bot, update):
 	lastQuery = update.message.text
 	message = imagesearch(lastQuery.replace('/image ',''),moreCounter)
 	if(message != None):
-		bot.send_photo(chat_id=update.message.chat_id, photo=message)
+		try:
+			bot.send_photo(chat_id=update.message.chat_id, photo=message)
+		except:
+			bot.send_message(chat_id=update.message.chat_id, text="não consegui acesso à imagem!")
 
 def google(bot, update):
 	global moreCounter
