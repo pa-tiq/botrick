@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, RegexHandler, ConversationHandler, InlineQueryHandler)
+from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, RegexHandler, ConversationHandler, InlineQueryHandler, CallbackContext)
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from random import randint
 from bs4 import BeautifulSoup
@@ -67,7 +67,7 @@ moreCounter = 0
 lastQuery = ""
 wolframclient = wolframalpha.Client(keys.wolfram)
 
-updater = Updater(token=keys.telegram)
+updater = Updater(token=keys.telegram, use_context=True)
 dispatcher = updater.dispatcher
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -98,10 +98,12 @@ def imagesearch(search,i):
 	url="https://www.google.co.in/search?q="+search+"&source=lnms&tbm=isch"
 	header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"}
 	soup = get_soup(url,header) 
-	ActualImage=[] #unused
-	for a in soup.find_all("div",{"class":"rg_meta"}):
-		link, Type = json.loads(a.text)["ou"], json.loads(a.text)["ity"]
-		ActualImage.append((link,Type)) #unused
+	#ActualImage=[] #unused
+	for a in soup.find_all("div",{"class":"bRMDJf islir"}):
+				
+		link = json.loads(a.text)["ou"]
+		#link, Type = json.loads(a.text)["ou"], json.loads(a.text)["ity"]
+		#ActualImage.append((link,Type)) #unused
 		if(i==0): 
 			return(link)
 		else:
@@ -140,35 +142,29 @@ def gifsearch(search,i):
 	search_results = re.findall(r"\"bitly_gif_url\":\s\"https://(.{14})\"", json.dumps(data))
 	return search_results[i]
 
-def start(bot, update): 
-	bot.send_message(chat_id=update.message.chat_id, text= randomstart())
+def start(update, context): 
+	bot_send_message(update,context,randomstart())
 	updater.start_polling()
 
-def kill(bot, update): 	
-	bot.send_message(chat_id=update.message.chat_id, text= "infelizmente não sei como faz pra matar alguém")
-	bot.send_message(chat_id=update.message.chat_id, text= "também não consigo nem me matar")
-	bot.send_message(chat_id=update.message.chat_id, text= "que monstro criaria um ser que não consegue tirar a própria vida?")
+def helpcommands(update, context):
+	bot_send_message(update,context,"/image - pesquisar imagem")
+	bot_send_message(update,context,"/video - pesquisar vídeo")
+	bot_send_message(update,context,"/search - pesquisar no google")
+	bot_send_message(update,context,"/gif - pesquisar gif")
+	bot_send_message(update,context,"/more - ver próximo resultado depois de uma pesquisa de image, video, search ou gif")
+	bot_send_message(update,context,"/wolfram - pesquisar qualquer coisa no wolfram")
+	bot_send_message(update,context,"/random_album - álbum aleatório")
 
-def helpcommands(bot, update): 
-	bot.send_message(chat_id=update.message.chat_id, text="/kill - matar")
-	bot.send_message(chat_id=update.message.chat_id, text="/image - pesquisar imagem")
-	bot.send_message(chat_id=update.message.chat_id, text="/video - pesquisar vídeo")
-	bot.send_message(chat_id=update.message.chat_id, text="/search - pesquisar no google")
-	bot.send_message(chat_id=update.message.chat_id, text="/gif - pesquisar gif")
-	bot.send_message(chat_id=update.message.chat_id, text="/more - ver próximo resultado depois de uma pesquisa de image, video, search ou gif")
-	bot.send_message(chat_id=update.message.chat_id, text="/wolfram - pesquisar qualquer coisa no wolfram")
-	bot.send_message(chat_id=update.message.chat_id, text="/random_album - álbum aleatório")
-
-def video(bot, update):
+def video(update, context):
 	global moreCounter
 	moreCounter = 0
 	global lastQuery
 	lastQuery = update.message.text
 	message = videosearch(lastQuery.replace('/video ',''),moreCounter)
 	if(message != None):
-		bot.send_message(chat_id=update.message.chat_id, text=message)
+		bot_send_message(update,context,message)
 
-def image(bot, update):
+def image(update, context):
 	global moreCounter
 	moreCounter = 0
 	global lastQuery
@@ -176,32 +172,35 @@ def image(bot, update):
 	message = imagesearch(lastQuery.replace('/image ',''),moreCounter)
 	if(message != None):
 		try:
-			bot.send_photo(chat_id=update.message.chat_id, photo=message)
+			bot_send_message(update,context,message)
+			context.bot.send_photo(chat_id=update.effective_chat.id, photo=message)
 		except:
-			bot.send_message(chat_id=update.message.chat_id, text="não consegui acesso à imagem!")
+			bot_send_message(update,context,"não consegui acesso à imagem!")
+	else: 
+		bot_send_message(update,context,"deu alguma merda na hora de pegar a imagem")
 
-def google(bot, update):
+def google(update, context):
 	global moreCounter
 	moreCounter = 0
 	global lastQuery
 	lastQuery = update.message.text
 	message = googlesearch(lastQuery.replace('/search ',''),moreCounter)
 	if(message != None):
-		bot.send_message(chat_id=update.message.chat_id, text=message)
+		bot_send_message(update,context,message)
 
-def gif(bot, update):
+def gif(update, context):
 	global moreCounter
 	moreCounter = 0
 	global lastQuery
 	lastQuery = update.message.text
 	message = gifsearch(lastQuery.replace('/gif ',''),moreCounter)
 	if(message != None):
-		bot.send_message(chat_id=update.message.chat_id, text=message)
+		bot_send_message(update,context,message)
 
-def random_album(bot, update):
-	bot.send_message(chat_id=update.message.chat_id, text= random_album_search())		
+def random_album(update, context):
+	bot_send_message(update,context,random_album_search())
 
-def wolfram(bot, update):
+def wolfram(update, context):
 	response = wolframexpression(update.message.text.replace('/wolfram ',''))
 	if(response == None): return
 	try:
@@ -219,17 +218,17 @@ def wolfram(bot, update):
 	
 	if(info!="" and results!=""):
 		if(info == results):
-			bot.send_message(chat_id=update.message.chat_id, text= results)
+			bot_send_message(update,context,results)
 		else:
-			bot.send_message(chat_id=update.message.chat_id, text= info)   
-			bot.send_message(chat_id=update.message.chat_id, text= results)
+			bot_send_message(update,context,info)
+			bot_send_message(update,context,results)
 	else: 
 		if(details != ""):
 			for key,value in details.items():
-				if(value!=None): 
-					bot.send_message(chat_id=update.message.chat_id, text= key+": "+value)
+				if(value!=None):
+					bot_send_message(update,context,key+": "+value)
 
-def more(bot,update):	
+def more(update,context):	
 	if lastQuery == "":
 		return
 	global moreCounter
@@ -238,31 +237,33 @@ def more(bot,update):
 		moreCounter += 1
 		video = videosearch(query[1],moreCounter)
 		if(video != None):
-			bot.send_message(chat_id=update.message.chat_id, text=video)
+			bot_send_message(update,context,video)
 	elif (query[0] == "/image"):
 		moreCounter += 1
 		image = imagesearch(query[1],moreCounter)
 		if(image != None):
-			bot.send_message(chat_id=update.message.chat_id, text=image)
+			bot_send_message(update,context,image)
 	elif (query[0] == "/search"):
 		moreCounter += 1
 		goog = googlesearch(query[1],moreCounter)
 		if(goog != None):
-			bot.send_message(chat_id=update.message.chat_id, text=goog)
+			bot_send_message(update,context,goog)
 	elif (query[0] == "/gif"):
 		moreCounter += 1
 		gif = gifsearch(query[1],moreCounter)
 		if(gif != None):
-			bot.send_message(chat_id=update.message.chat_id, text=gif)
+			bot_send_message(update,context,gif)
 
-def echo(bot,update): 
-	bot.send_message(chat_id=update.message.chat_id, text= randomreply())
+def echo(update, context):
+	bot_send_message(update,context,randomreply())
 
-def unknown(bot, update): 
-	bot.send_message(chat_id=update.message.chat_id, text="que porra de comando é esse? vai se foder")
+def unknown(update, context):
+	bot_send_message(update,context,"que porra de comando é esse? vai se foder")
 	
+def bot_send_message(update,context,message):
+	context.bot.send_message(chat_id=update.effective_chat.id, text= message)
+
 dispatcher.add_handler(CommandHandler('start',start))
-dispatcher.add_handler(CommandHandler('kill',kill))
 dispatcher.add_handler(CommandHandler('help', helpcommands))
 dispatcher.add_handler(CommandHandler('video', video))
 dispatcher.add_handler(CommandHandler('image', image))
