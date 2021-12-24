@@ -4,15 +4,10 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, Rege
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from random import randint
 from bs4 import BeautifulSoup
-import logging
-import urllib.request
-import urllib.parse
-import re
-import sys
-import simplejson
-import requests
-import json
-import wolframalpha
+import logging, re, sys, simplejson, requests, json, wolframalpha
+import urllib.request, urllib.parse
+#from PIL import Image
+#from io import BytesIO
 import keys
 
 starts = {
@@ -60,7 +55,9 @@ replies = {
 	24:"hitler não fez nada de errado",
 	25:"quié",
 	26:"q q tu quer porra",
-	27:"dedo no cu e gritaria"
+	27:"dedo no cu e gritaria",
+	28:"oieeeeeeeeeeeeeeeeeeee",
+	29:"uiuiui"
 }
 
 moreCounter = 0
@@ -83,37 +80,79 @@ def randomreply():
 	return replies[randint(1,len(replies))]
 
 def videosearch(search,i):
-	query_string = urllib.parse.urlencode({"search_query" : search})
-	html_content = urllib.request.urlopen("http://www.youtube.com/results?search_query=" + query_string)
-	search_results = re.findall(r'href=\"\/watch\?v=(.{11})', html_content.read().decode())
+	#query_string = urllib.parse.urlencode({"search_query" : search})
+	html_content = urllib.request.urlopen("http://www.youtube.com/results?search_query=" + search)
+	#search_results = re.findall(r'href=\"\/watch\?v=(.{11})', html_content.read().decode())
+	search_results = re.findall(r'"videoId":".{11}"', html_content.read().decode())
 	output = []
 	for x in search_results:
-		if x not in output:
-			output.append(x)
+		if x[11:22] not in output:
+			output.append(x[11:22])
 	return("http://www.youtube.com/watch?v=" + output[i])
 
 def imagesearch(search,i):
 	search= search.split()
 	search='+'.join(search)
-	url="https://www.google.co.in/search?q="+search+"&source=lnms&tbm=isch"
-	header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"}
+	url="https://duckduckgo.com/?q="+search+"&t=h_&iax=images&ia=images"
+	header={'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582"}
 	soup = get_soup(url,header) 
-	#ActualImage=[] #unused
-	for a in soup.find_all("div",{"class":"bRMDJf islir"}):
-				
-		link = json.loads(a.text)["ou"]
-		#link, Type = json.loads(a.text)["ou"], json.loads(a.text)["ity"]
-		#ActualImage.append((link,Type)) #unused
+	all = soup.find_all("img",{"class":"tile--img__img"})	
+	for a in all:	
+		link = json.loads(a.text)["src"]
 		if(i==0): 
 			return(link)
 		else:
 			i = i-1
 
+# google fucked image searches
+
+#def imagesearch(search,i):
+#	search= search.split()
+#	search='+'.join(search)
+#	url="https://www.google.co.in/search?q="+search+"&source=lnms&tbm=isch"
+#	header={'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582"}
+#	soup = get_soup(url,header) 
+#	all = soup.find_all("a",{"class":"wXeWr"})
+#	#all = soup.find_all("div",{"class":"bRMDJf"})
+#	for a in all:	
+#		link = json.loads(a.text)["ou"]
+#		if(i==0): 
+#			return(link)
+#		else:
+#			i = i-1
+
+#def imagesearch(search,i):
+#	search= search.split()
+#	search='+'.join(search)
+#	headers={'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582"}
+#	params = {
+#		"q": search,
+#		"sourceid": "chrome",
+#	}
+#	html = requests.get("https://www.google.com/search", params=params, headers=headers)
+#	soup = BeautifulSoup(html.text, 'lxml')
+#	for result in soup.select('div[jsname=dTDiAc]'):
+#		link = f"https://www.google.com{result.a['href']}"
+#
+#	script_img_tags = soup.find_all('script')
+#	# https://regex101.com/r/L3IZXe/4
+#	img_matches = re.findall(r"s='data:image/jpeg;base64,(.*?)';", str(script_img_tags))
+#
+#	for image in enumerate(img_matches):
+#		try:
+#			# https://stackoverflow.com/a/6966225/15164646
+#			if(i==0):
+#				return Image.open(BytesIO(base64.b64decode(str(image))))
+#			else:
+#				i = i-1
+#		except:
+#			pass
+
 def googlesearch(search,i):
 	search= search.split()
 	search='+'.join(search)
 	url="https://www.google.co.in/search?q="+search+"&source=lnms"
-	header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"}
+	header={'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19582"}
 	soup = get_soup(url,header) 
 	#iUh30 is where the link is easier to get. It's the little green-coloured link in every result box.
 	for a in soup.find_all("cite",{"class":"iUh30"}): 
@@ -139,7 +178,7 @@ def gifsearch(search,i):
 	search= search.split()
 	search='+'.join(search)	
 	data = json.loads(urllib.request.urlopen("http://api.giphy.com/v1/gifs/search?q="+search+"&api_key="+keys.giphy+"&limit=10").read())
-	search_results = re.findall(r"\"bitly_gif_url\":\s\"https://(.{14})\"", json.dumps(data))
+	search_results = re.findall(r"\"url\":\s\"https://(.{14})\"", json.dumps(data))
 	return search_results[i]
 
 def start(update, context): 
@@ -187,6 +226,8 @@ def google(update, context):
 	message = googlesearch(lastQuery.replace('/search ',''),moreCounter)
 	if(message != None):
 		bot_send_message(update,context,message)
+	else: 
+		bot_send_message(update,context,"deu alguma merda na hora de pegar o resultado")
 
 def gif(update, context):
 	global moreCounter
